@@ -1,3 +1,9 @@
+var Globals = {
+    videoPlayer: null
+}
+
 $(function() {
-    // do startup stuff.
+    console.log("document ready");
+    Globals.videoPlayer = new VideoPlayer();
+    Globals.videoPlayer.start();
 })

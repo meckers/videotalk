@@ -1,30 +1,18 @@
-$(function() {
-    videojs.options.flash.swf = "/public/swf/video-js.swf";
+VideoPlayer = Class.extend({
+    init: function() {
 
-
-    videojs("vid1").ready(function() {
-        console.log("ready");
-    });
-
-
-
-
-
-
-
-    //console.log(videojs("example_video_1"));
-
-    /*var myPlayer = videojs("example_video_1");*/
-
-     /*
-    myPlayer.on("play", function() {
-        console.log("play");
-    });
-
-    myPlayer.on("timeupdate", function(e) {
-        console.log("time updated", myPlayer.currentTime());
-    });*/
-
-    /*console.log(myPlayer);*/
-})
+    },
+    start: function() {
+        console.log("starting...");
+        this.pollTimeout = window.setInterval(this.pollStarted, 500);
+    },
+    pollStarted: function() {
+        console.log("polling...");
+        var me = this;
+        videojs("vid1").play();
+        if (videojs("vid1").currentTime() != 0) {
+            window.clearInterval(me.pollTimeout);
+        }
+    }
+});
 
