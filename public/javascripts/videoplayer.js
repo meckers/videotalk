@@ -7,7 +7,14 @@ VideoPlayer = Class.extend({
     clips: [
         {
             start: 10,
-            end: 15
+            end: 15,
+            texts: [
+                {
+                    start: 12,
+                    duration: 2,
+                    text: 'Här pratar han om slagsmål...'
+                }
+            ]
         },
         {
             start: 210,
@@ -60,7 +67,7 @@ VideoPlayer = Class.extend({
         var thisClip = this.getClip();
         console.log("We are at", now);
         if (now >= thisClip.end-1) {
-            console.log("clip finished, pausing...")
+            console.log("clip finished, playing next...")
             this.playNext();
         }
     },
