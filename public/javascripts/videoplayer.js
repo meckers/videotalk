@@ -7,11 +7,15 @@ VideoPlayer = Class.extend({
     clips: [
         {
             start: 10,
-            end: 20
+            end: 15
+        },
+        {
+            start: 210,
+            end: 215
         }
     ],
 
-    clipIndex: 0,
+    clipIndex: -1,
 
     init: function() {
     },
@@ -32,7 +36,18 @@ VideoPlayer = Class.extend({
     continue: function() {
         this.player = videojs("vid1");
         this.listen();
-        this.player.currentTime(this.clips[this.clipIndex].start);
+        this.playNext();
+    },
+    playNext: function() {
+        if (this.clipIndex < this.clips.length-1) {
+            this.clipIndex++;
+            this.player.currentTime(this.clips[this.clipIndex].start);
+            console.log("resuming play at", this.player.currentTime());
+            this.player.play();
+        }
+        else {
+            this.player.pause();
+        }
     },
     listen: function() {
         var me = this;
@@ -45,7 +60,8 @@ VideoPlayer = Class.extend({
         var thisClip = this.getClip();
         console.log("We are at", now);
         if (now >= thisClip.end-1) {
-            this.player.pause();
+            console.log("clip finished, pausing...")
+            this.playNext();
         }
     },
 
