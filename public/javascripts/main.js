@@ -1,9 +1,8 @@
 var Globals = {
-    videoPlayer: null
+    collage: null
 }
 
 $(function() {
-    console.log("document ready");
-    Globals.videoPlayer = new VideoPlayer();
-    Globals.videoPlayer.start();
+    Globals.collage = new Collage();
+    //Globals.videoPlayer.start();
 })
