@@ -18,6 +18,10 @@ ActionManager = Class.extend({
 
 /* Solo Text Action Manager ------------------------------------------------------------------------------------------*/
 
+//TODO: Considering merging the ActionManager with Action, so that the new Action class has both properties such
+//as data and duration and methods such as do, run etc. This would allow not having to chain references within this
+//class more than two levels of hierarchy (i.e. this.data instead of this.action.data), among other advantages!
+
 SoloTextActionManager = ActionManager.extend({
     run: function() {
         var me = this;
@@ -105,9 +109,9 @@ ActionList = Class.extend({
 });
 
 
-/* Collage -----------------------------------------------------------------------------------------------------------*/
+/* Sequencer ---------------------------------------------------------------------------------------------------------*/
 
-Collage = Class.extend({
+Sequencer = Class.extend({
 
     actions: null,
 

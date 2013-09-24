@@ -1,8 +1,8 @@
 var Globals = {
-    collage: null
+    sequencer: null
 }
 
 $(function() {
-    Globals.collage = new Collage();
+    Globals.sequencer = new Sequencer();
     //Globals.videoPlayer.start();
 })
