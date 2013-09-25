@@ -1,82 +1,34 @@
-var G = {
-    pollInterval : null
-}
-
 VideoPlayer = Class.extend({
-
-    clips: [
-        {
-            start: 10,
-            end: 15,
-            texts: [
-                {
-                    start: 12,
-                    duration: 2,
-                    text: 'Här pratar han om slagsmål...'
-                }
-            ]
-        },
-        {
-            start: 210,
-            end: 215
+    init: function(options) {
+        $.extend(this, options);
+    },
+    /*
+    domElement: function() {
+        // We are assuming we only need one player element on the page for all videos in the action list.
+        if ($("#video").length == 0) {
+            this.element = this.createElement();
         }
-    ],
-
-    clipIndex: -1,
-
-    init: function() {
+        return $(this.element)[0];
+    },*/
+    domElement: function() {
+        return $("#vid1")[0];
+    },
+    playerElement: function() {
+        return this.domElement().find('#video_html5_api');
+    },
+    createElement: function() {
+        var element = $("<video></video>");
+        element.attr({
+            'id': 'video',
+            'preload': 'auto',
+            'data-setup': '{ "techOrder": ["youtube"] }'
+        });
+        element.addClass('video-js vjs-default-skin');
+        return element;
     },
     start: function() {
-        console.log("starting...");
-        var me = this;
-        G.pollInterval = window.setInterval(function() {
-            me.pollStarted();
-        }, 500);
-    },
-    pollStarted: function() {
-        videojs("vid1").play();
-        if (videojs("vid1").currentTime() != 0) {
-            window.clearInterval(G.pollInterval);
-            this.continue();
-        }
-    },
-    continue: function() {
-        this.player = videojs("vid1");
-        this.listen();
-        this.playNext();
-    },
-    playNext: function() {
-        if (this.clipIndex < this.clips.length-1) {
-            this.clipIndex++;
-            this.player.currentTime(this.clips[this.clipIndex].start);
-            console.log("resuming play at", this.player.currentTime());
-            this.player.play();
-        }
-        else {
-            this.player.pause();
-        }
-    },
-    listen: function() {
-        var me = this;
-        this.player.on('timeupdate', function() {
-            me.onTimeUpdate();
-        })
-    },
-    onTimeUpdate: function() {
-        var now = this.player.currentTime();
-        var thisClip = this.getClip();
-        console.log("We are at", now);
-        if (now >= thisClip.end-1) {
-            console.log("clip finished, playing next...")
-            this.playNext();
-        }
-    },
-
-    getClip: function(index) {
-        index = index || this.clipIndex;
-        return this.clips[index];
+        /*this.videojs = videojs("vid1");
+        this.videojs.src(this.src);
+        this.videojs.play();*/
     }
-
-
 });
-

@@ -1,35 +1,18 @@
-/* Action Manager ----------------------------------------------------------------------------------------------------*/
+/* Action ------------------------------------------------------------------------------------------------------------*/
 
-// Superclass for all action managers
-ActionManager = Class.extend({
-    action: null,
+// Superclass for all actions
+Action = Class.extend({
+    type: null,
+    data: null,
+    duration: null,
+
     init: function(options) {
-        this.action = options.action;
+        $.extend(this, options);
         this.container = options.container || document;
     },
     do: function() {
-        if (this.action) {
-            console.log("Doing action", this.action);
-            this.run(this.action);
-        }
-    }
-});
-
-
-/* Solo Text Action Manager ------------------------------------------------------------------------------------------*/
-
-//TODO: Considering merging the ActionManager with Action, so that the new Action class has both properties such
-//as data and duration and methods such as do, run etc. This would allow not having to chain references within this
-//class more than two levels of hierarchy (i.e. this.data instead of this.action.data), among other advantages!
-
-SoloTextActionManager = ActionManager.extend({
-    run: function() {
-        var me = this;
-        this.render();
-        window.setTimeout(function(action) {
-            me.unrender();
-            Events.trigger('ACTION_COMPLETE', me.action);
-        }, this.action.duration*1000);
+        console.log("Doing action", this);
+        this.run();
     },
     domElement: function() {
         if (!this.element) {
@@ -37,16 +20,8 @@ SoloTextActionManager = ActionManager.extend({
         }
         return this.element;
     },
-    createElement: function() {
-        var element = $("<div></div>");
-        element.addClass('lab1-solotext-main');
-        element.html(this.action.data);
-        // TODO: bind more css to the text here such as transition style and rate.
-        return element;
-    },
     render: function() {
         $(this.container).append(this.domElement());
-
     },
     unrender: function() {
         this.domElement().remove();
@@ -54,36 +29,46 @@ SoloTextActionManager = ActionManager.extend({
 });
 
 
-/* YouTube Action Manager --------------------------------------------------------------------------------------------*/
+/* Solo Text Action --------------------------------------------------------------------------------------------------*/
 
-YouTubeActionManager = ActionManager.extend({
+SoloTextAction = Action.extend({
     run: function() {
         var me = this;
-        window.setTimeout(function(action) {
-            Events.trigger('ACTION_COMPLETE', me.action);
-        }, this.action.duration*1000);
+        this.render();
+        window.setTimeout(function() {
+            me.unrender();
+            Events.trigger('ACTION_COMPLETE', me);
+        }, this.duration*1000);
+    },
+    createElement: function() {
+        var element = $("<div></div>");
+        element.addClass('lab1-solotext-main');
+        element.html(this.data);
+        // TODO: bind more css to the text here such as transition style and rate.
+        return element;
     }
 });
 
 
-/* Action types ------------------------------------------------------------------------------------------------------*/
+/* YouTube Action ---------------------------------------------------------------------------------------------------*/
 
-ActionTypes = {
-    SOLO_TEXT : { managerClass: SoloTextActionManager },
-    YOUTUBE_CLIP : { managerClass: YouTubeActionManager }
-}
-
-
-/* Action ------------------------------------------------------------------------------------------------------------*/
-
-Action = Class.extend({
-    manager: null,
-    type: null,
-    data: null,
-    duration: null,
-
-    init: function(options) {
-        $.extend(this, options);
+YouTubeAction = Action.extend({
+    run: function() {
+        this.render();
+    },
+    render: function() {
+        var me = this;
+        this.player = new VideoPlayer({
+            'src' : this.data.url,
+            'ranges' : [{
+                'start': me.data.start,
+                'end': me.data.start + me.data.duration
+            }]
+        });
+        //var element = this.player.domElement();
+        //console.log("adding element to container", element, this.container);
+        //$(this.container).append(element);
+        this.player.start();
     }
 });
 
@@ -116,10 +101,8 @@ Sequencer = Class.extend({
     actions: null,
 
     init: function() {
-        this.performer = new ActionPerformer();
         this.actions = new ActionList(G.actionData);
         this.listen();
-        //this.performNextAction();
         this.performNextAction();
     },
 
@@ -131,49 +114,38 @@ Sequencer = Class.extend({
         console.log("previous action was", previousAction);
         var action = this.actions.next();
         if (action !== undefined) {
-            this.performer.perform(action);
+            action.do();
         }
     }
 
 });
 
 
-/* Action performer --------------------------------------------------------------------------------------------------*/
-
-ActionPerformer = Class.extend({
-    init: function() {
-    },
-    perform: function(action) {
-        var manager = new action.type.managerClass({
-            action: action,
-            container: $("#lab1-stage")
-        });
-        manager.do();
-    }
-});
-
-
-
-
-
 /* Global variables --------------------------------------------------------------------------------------------------*/
 var G = {
     pollInterval : null,
     actionData: [
-        new Action({
-            'type': ActionTypes.SOLO_TEXT,
-            'data': 'Välkomna',
-            'duration': 5
+        new SoloTextAction({
+            'container': '#lab1-stage',
+            'data': 'Nu blir det film, om 2 sekunder!',
+            'duration': 2
         }),
-        new Action({
-            'type': ActionTypes.SOLO_TEXT,
+        new YouTubeAction({
+            'container': '#lab1-stage',
+            'data': {
+                'start': 10,
+                'url': 'http://www.youtube.com/watch?v=t9v95hzURkQ',
+                'annotations': [{
+                    'start': 5,
+                    'duration': 2,
+                    'text': 'This video is WHACK!'
+                }]
+            },
+            'duration': 10
+        }),
+        new SoloTextAction({
+            'container': '#lab1-stage',
             'data': 'Hej då!',
-            'duration': 5
-        }),
-        new Action({
-            'type': ActionTypes.YOUTUBE_CLIP,
-            'data': 'http://www.youtube.com/watch?v=t9v95hzURkQ',
-            'start': 10,
             'duration': 5
         })
     ]
