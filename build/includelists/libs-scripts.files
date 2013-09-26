@@ -3,3 +3,4 @@ libs/simple-javascript-inheritance.js
 libs/video.js
 libs/events.js
 libs/vjs.youtube.js
+libs/swfobject.js

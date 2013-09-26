@@ -50,11 +50,42 @@ SoloTextAction = Action.extend({
 });
 
 
+/* Typewriter text Action --------------------------------------------------------------------------------------------*/
+
+TypewriterTextAction = Action.extend({
+    currentChar: 0,
+    run: function() {
+        var me = this;
+        this.render();
+        this.interval = window.setInterval(function() {
+            me.write();
+        }, this.chardelay);
+    },
+    createElement: function() {
+        var element = $("<div></div>");
+        element.addClass('lab1-typewritertext-main');
+        return element;
+    },
+    write: function() {
+        var element = this.domElement();
+        element.append(this.data.charAt(this.currentChar++))
+        console.log(this.currentChar, this.data.length);
+        if (this.currentChar == this.data.length-1) {
+            window.clearInterval(this.interval);
+            this.unrender();
+            Events.trigger('ACTION_COMPLETE', this);
+        }
+    }
+});
+
+
 /* YouTube Action ---------------------------------------------------------------------------------------------------*/
 
+/*
 YouTubeAction = Action.extend({
     run: function() {
         this.render();
+        this.listen();
     },
     render: function() {
         var me = this;
@@ -65,13 +96,52 @@ YouTubeAction = Action.extend({
                 'end': me.data.start + me.data.duration
             }]
         });
-        //var element = this.player.domElement();
+        var element = this.player.domElement();
+        $(element).addClass('active');
         //console.log("adding element to container", element, this.container);
         //$(this.container).append(element);
         this.player.start();
+    },
+    listen: function() {
+        Events.register('VIDEO_TIME_UPDATE', this.onTimeUpdate);
+    },
+    onTimeUpdate: function(e) {
+        console.log("time update handler");
+        var annotation = this.data.annotations[0];
+        if (this.player.currentTime() > annotation.start && !annotation.showing) {
+            console.log("showing annotation", annotation);
+            this.player.showAnnotation(annotation.text);
+            annotation.showing = true;
+        }
+        else if (this.player.currentTime() > (annotation.start + annotation.duration) && annotation.showing) {
+            console.log("removing annotation");
+            this.player.removeAnnotation();
+            annotation.showing = false;
+        }
+    }
+
+});
+  */
+
+YouTubeAction = Action.extend({
+    run: function() {
+        this.render();
+    },
+    render: function() {
+        var me = this;
+        this.player = new YouTube({
+            'container': this.container,
+            'src' : this.data.url,
+            'ranges' : [{
+                'start': me.data.start,
+                'end': me.data.start + me.data.duration
+            }]
+        });
+        Events.register("YOUTUBE_PLAYER_READY", function(element) {
+            element
+        });
     }
 });
-
 
 /* Action list -------------------------------------------------------------------------------------------------------*/
 
@@ -130,11 +200,17 @@ var G = {
             'data': 'Nu blir det film, om 2 sekunder!',
             'duration': 2
         }),
+        /*
+        new TypewriterTextAction({
+            'container': '#lab1-stage',
+            'data': 'Måste bara testa detta först... hej svejs',
+            'chardelay': 100
+        }), */
         new YouTubeAction({
             'container': '#lab1-stage',
             'data': {
                 'start': 10,
-                'url': 'http://www.youtube.com/watch?v=t9v95hzURkQ',
+                'url': 'http://www.youtube.com/v/ii4Ev8Dyo20',
                 'annotations': [{
                     'start': 5,
                     'duration': 2,

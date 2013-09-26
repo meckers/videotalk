@@ -8,10 +8,14 @@ body {
 }
 
 
-#lab1-stage {
+.video-js.active {
     display: block;
-    width: 320px;
-    height: 180px;
+}
+
+
+#lab1-stage {
+    width: 640px;
+    height: 360px;
     background-color: black;
     color: white;
 }
