@@ -14,8 +14,21 @@ body {
 
 
 #lab1-stage {
+    position:relative;
     width: 640px;
     height: 360px;
     background-color: black;
     color: white;
+}
+
+
+#youtube-annotation {
+    width: 640px;
+    height: 50px;
+    position: absolute;
+    bottom: 0px;
+    background-color: black;
+    z-index: 10000;
+    bottom: 27px;
+    opacity: 0.8;
 }
