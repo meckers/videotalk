@@ -81,65 +81,37 @@ TypewriterTextAction = Action.extend({
 
 /* YouTube Action ---------------------------------------------------------------------------------------------------*/
 
-/*
 YouTubeAction = Action.extend({
     run: function() {
-        this.render();
         this.listen();
-    },
-    render: function() {
-        var me = this;
-        this.player = new VideoPlayer({
-            'src' : this.data.url,
-            'ranges' : [{
-                'start': me.data.start,
-                'end': me.data.start + me.data.duration
-            }]
-        });
-        var element = this.player.domElement();
-        $(element).addClass('active');
-        //console.log("adding element to container", element, this.container);
-        //$(this.container).append(element);
-        this.player.start();
+        this.render();
     },
     listen: function() {
-        Events.register('VIDEO_TIME_UPDATE', this.onTimeUpdate);
-    },
-    onTimeUpdate: function(e) {
-        console.log("time update handler");
-        var annotation = this.data.annotations[0];
-        if (this.player.currentTime() > annotation.start && !annotation.showing) {
-            console.log("showing annotation", annotation);
-            this.player.showAnnotation(annotation.text);
-            annotation.showing = true;
-        }
-        else if (this.player.currentTime() > (annotation.start + annotation.duration) && annotation.showing) {
-            console.log("removing annotation");
-            this.player.removeAnnotation();
-            annotation.showing = false;
-        }
-    }
-
-});
-  */
-
-YouTubeAction = Action.extend({
-    run: function() {
-        this.render();
+        Events.register("YOUTUBE_PLAYER_PLAYING", this, this.onPlay);
+        Events.register("YOUTUBE_PLAYER_STOPPED", this, this.onStop);
     },
     render: function() {
         var me = this;
-        this.player = new YouTube({
+        this.player = new YouTube.Player({
             'container': this.container,
             'src' : this.data.url,
             'ranges' : [{
                 'start': me.data.start,
                 'end': me.data.start + me.data.duration
-            }]
+            }],
+            'autoplay': true
         });
-        Events.register("YOUTUBE_PLAYER_READY", function(element) {
-            element
-        });
+    },
+    onPlay: function() {
+        var me = this;
+        console.log("video now playing");
+        this.pollInterval = window.setInterval(function() {
+            console.log("Polling current time (seconds)", me.player.getCurrentTime());
+        }, 500);
+    },
+    onStop: function() {
+        window.clearInterval(this.pollInterval);
+        console.log("video stopped/paused");
     }
 });
 
