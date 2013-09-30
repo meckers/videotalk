@@ -1,3 +1,9 @@
+actions/action.js
+actions/action-list.js
+actions/solotext-action.js
+actions/typewriter-text-action.js
+actions/youtube-action.js
+globals.js
+sequencer.js
 main.js
 youtube.js
-lab1.js
