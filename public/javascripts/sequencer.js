@@ -3,6 +3,7 @@
 Sequencer = Class.extend({
 
     actions: null,
+    timeLine: null,
 
     init: function() {
         this.actions = new ActionList(G.actionData);
