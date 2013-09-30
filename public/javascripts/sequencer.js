@@ -11,11 +11,15 @@ Sequencer = Class.extend({
     },
 
     listen: function() {
-        Events.register('ACTION_COMPLETE', this, this.performNextAction);
+        Events.register('ACTION_COMPLETE', this, this.onActionComplete);
     },
 
-    performNextAction: function(previousAction) {
-        console.log("previous action was", previousAction);
+    onActionComplete: function(action) {
+        action.running = false;
+        this.performNextAction();
+    },
+
+    performNextAction: function() {
         var action = this.actions.next();
         if (action !== undefined) {
             action.do();

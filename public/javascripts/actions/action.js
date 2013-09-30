@@ -5,6 +5,7 @@ Action = Class.extend({
     type: null,
     data: null,
     duration: null,
+    running: false,
 
     init: function(options) {
         $.extend(this, options);
@@ -13,6 +14,7 @@ Action = Class.extend({
     do: function() {
         console.log("Doing action", this);
         this.run();
+        this.running = true;
     },
     domElement: function() {
         if (!this.element) {
