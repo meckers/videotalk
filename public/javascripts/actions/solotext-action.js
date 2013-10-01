@@ -4,10 +4,16 @@ SoloTextAction = Action.extend({
     run: function() {
         var me = this;
         this.render();
+        /*
         window.setTimeout(function() {
             me.unrender();
             Events.trigger('ACTION_COMPLETE', me);
-        }, this.duration*1000);
+        }, this.duration*1000);*/
+        this._super();
+    },
+    stop: function() {
+        this.unrender();
+        this._super();
     },
     createElement: function() {
         var element = $("<div></div>");

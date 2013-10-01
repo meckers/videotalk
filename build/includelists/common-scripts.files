@@ -4,6 +4,6 @@ actions/solotext-action.js
 actions/typewriter-text-action.js
 actions/youtube-action.js
 globals.js
-sequencer.js
+timeline.js
 main.js
 youtube.js

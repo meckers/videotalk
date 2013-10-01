@@ -3,6 +3,11 @@ var Globals = {
 }
 
 $(function() {
-    Globals.sequencer = new Sequencer();
+    //Globals.sequencer = new Sequencer();
     //Globals.videoPlayer.start();
+    //Globals.timeLine = new TimeLine().run();
+    Globals.app = new App({
+        autoRun: true
+    });
+
 })

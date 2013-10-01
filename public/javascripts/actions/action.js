@@ -14,7 +14,12 @@ Action = Class.extend({
     do: function() {
         console.log("Doing action", this);
         this.run();
+    },
+    run: function() {
         this.running = true;
+    },
+    stop: function() {
+        this.running = false;
     },
     domElement: function() {
         if (!this.element) {
