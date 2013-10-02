@@ -3,7 +3,9 @@ actions/action-list.js
 actions/solotext-action.js
 actions/typewriter-text-action.js
 actions/youtube-action.js
+app.js
 globals.js
 timeline.js
+timeline-gui.js
 main.js
 youtube.js

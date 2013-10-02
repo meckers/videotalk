@@ -31,6 +31,7 @@ Action = Class.extend({
         $(this.container).append(this.domElement());
     },
     unrender: function() {
+        console.log("unrender", this.domElement());
         this.domElement().remove();
     }
 });

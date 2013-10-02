@@ -1,19 +1,48 @@
 TimeLine = Class.extend({
-
     actions: null,
     currentTime: 0,
-    tickDuration: 500, // milliseconds
+    tickDuration: 250, // milliseconds
+    interval: null,
+    gui: null,
+    running: false,
     init: function() {
         this.actions = new ActionList(G.actionData);
+        this.listen();
+        this.render();
+    },
+    listen: function() {
+        Events.register("STARTSTOP_CLICKED", this, this.toggleStartStop);
+        Events.register("TIMELINE_INDICATOR_MOVED", this, this.onIndicatorMoved);
+    },
+    render: function() {
+        this.gui = new TimelineGUI({
+            container: '#timeline-container'
+        });
+        this.gui.render();
     },
     run: function(time) {
         var me = this;
         if (time) {
             this.setTime(time);
         }
-        window.setInterval(function() {
+        this.interval = window.setInterval(function() {
             me.tick();
         }, this.tickDuration);
+        this.running = true;
+        Events.trigger("TIMELINE_STARTED", this);
+    },
+    stop: function() {
+        window.clearInterval(this.interval);
+        this.running = false;
+        Events.trigger("TIMELINE_STOPPED", this);
+    },
+    toggleStartStop: function() {
+        if (this.running) {
+            this.stop();
+        }
+        else {
+            this.run();
+        }
     },
     getCurrentAction: function() {
         return this.actions.getActionByTime(this.currentTime);
@@ -28,39 +57,19 @@ TimeLine = Class.extend({
         return this.currentTime;
     },
     tick: function() {
-        console.log("tick..");
+        var totalDuration = this.getDuration();
         this.currentTime += this.tickDuration/1000;
-        Events.trigger("TIMELINE_TICK", this.currentTime);
+        this.gui.update(totalDuration, this.currentTime);
+        if (totalDuration > this.currentTime) {
+            Events.trigger("TIMELINE_TICK", this.currentTime);
+        }
+        else {
+            this.stop();
+        }
+    },
+    onIndicatorMoved: function(jQueryEvent) {
+        this.setTime(this.gui.getTime(this.getDuration()));
     }
 });
 
 
-App = Class.extend({
-    currentAction: null,
-    init: function(options) {
-        $.extend(this, options);
-        this.timeLine = new TimeLine();
-        this.listen();
-        if (this.autoRun) {
-            this.run();
-        }
-    },
-    listen: function() {
-        Events.register("TIMELINE_TICK", this, this.onTick);
-    },
-    onTick: function(currentTime) {
-        var action = this.timeLine.getCurrentAction();
-        if (action !== this.currentAction) {
-            console.log("switching to new action", action);
-            this.currentAction = action;
-            this.currentAction.do();
-        }
-        else if (action.running) {
-            console.log("busy with action", action);
-        }
-    },
-    run: function() {
-        console.log("Running timeline");
-        this.timeLine.run();
-    }
-});

@@ -4,7 +4,17 @@ var G = {
     actionData: [
         new SoloTextAction({
             'container': '#lab1-stage',
-            'data': 'Nu blir det film, om 2 sekunder!',
+            'data': 'Jag heter Magnus...',
+            'duration': 2
+        }),
+        new SoloTextAction({
+            'container': '#lab1-stage',
+            'data': '...jag är webbutvecklare...',
+            'duration': 2
+        }),
+        new SoloTextAction({
+            'container': '#lab1-stage',
+            'data': '...och jag gillar kaffe!',
             'duration': 2
         }),
         /*
@@ -13,6 +23,7 @@ var G = {
          'data': 'Måste bara testa detta först... hej svejs',
          'chardelay': 100
          }), */
+        /*
         new YouTubeAction({
             'container': '#youtube-video',
             'data': {
@@ -30,7 +41,7 @@ var G = {
                     }]
             },
             'duration': 10
-        }),
+        }),*/
         new SoloTextAction({
             'container': '#lab1-stage',
             'data': 'Hej då!',
