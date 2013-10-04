@@ -10,10 +10,12 @@ TimelineGUI = Class.extend({
         Events.register("TIMELINE_STOPPED", this, this.onStop);
         Events.register("INDICATOR_DRAG_STOP", this, this.onIndicatorDragStop);
     },
-    render: function() {
+    render: function(totalDuration) {
         this.getDomElement().append(this.getIndicator());
         this.container.append(this.getStartStopElement());
         this.container.append(this.getDomElement());
+        var actionBlocks = this.getActionBlocks(totalDuration);
+        this.getDomElement().append(actionBlocks);
     },
     onStart: function() {
         console.log("on start");
@@ -34,6 +36,27 @@ TimelineGUI = Class.extend({
         var domElement = $("<div></div>");
         domElement.addClass('timeline-gui');
         return domElement;
+    },
+    getActionBlocks: function(totalDuration) {
+        this.actionBlocks = this.actionBlocks || this.createActionBlocks(totalDuration);
+        return this.actionBlocks;
+    },
+    createActionBlocks: function(totalDuration) {
+        var container = $('<div></div>');
+        container.addClass('action-block-container');
+        for(var i=0; i<this.actions.items.length; i++) {
+            var item = this.actions.items[i];
+            var block = $('<div></div>');
+            block.addClass('block ' + item.cssClassName);
+            var procentage = item.duration / totalDuration;
+            var width = Math.floor(this.getDomElement().width() * procentage) - 1;
+            block.css({
+                width: width
+            });
+            block.html('&nbsp;' + item.name);
+            container.append(block);
+        }
+        return container;
     },
     getIndicator: function() {
         this.indicator = this.indicator || this.createIndicator();
@@ -65,7 +88,6 @@ TimelineGUI = Class.extend({
         return startStop;
     },
     onClickStartStop: function() {
-        console.log("click!");
         Events.trigger("STARTSTOP_CLICKED", this);
     },
     placeIndicator: function(totalDuration, time) {

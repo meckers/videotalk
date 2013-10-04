@@ -18,7 +18,7 @@ Action = Class.extend({
     run: function() {
         this.running = true;
     },
-    stop: function() {
+    end: function() {
         this.running = false;
     },
     domElement: function() {

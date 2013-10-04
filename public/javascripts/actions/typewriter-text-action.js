@@ -1,6 +1,8 @@
 /* Typewriter text Action --------------------------------------------------------------------------------------------*/
 
 TypewriterTextAction = Action.extend({
+    name: 'Typewriter text',
+    cssClassName: 'typewriter-text',
     currentChar: 0,
     run: function() {
         var me = this;
@@ -8,7 +10,7 @@ TypewriterTextAction = Action.extend({
         this.interval = window.setInterval(function() {
             me.write();
         }, this.chardelay);
-    },
+    }
     createElement: function() {
         var element = $("<div></div>");
         element.addClass('lab1-typewritertext-main');

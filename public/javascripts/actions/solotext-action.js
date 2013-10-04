@@ -1,6 +1,8 @@
 /* Solo Text Action --------------------------------------------------------------------------------------------------*/
 
 SoloTextAction = Action.extend({
+    name: 'Solo text',
+    cssClassName: 'solo-text',
     run: function() {
         var me = this;
         this.render();
@@ -11,7 +13,7 @@ SoloTextAction = Action.extend({
         }, this.duration*1000);*/
         this._super();
     },
-    stop: function() {
+    end: function() {
         this.unrender();
         this._super();
     },

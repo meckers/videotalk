@@ -1,9 +1,15 @@
 /* YouTube Action ---------------------------------------------------------------------------------------------------*/
 
 YouTubeAction = Action.extend({
+    name: 'Youtube clip',
+    cssClassName: 'youtube',
     run: function() {
         this.listen();
         this.render();
+    },
+    end: function() {
+        this.unrender();
+        this._super();
     },
     listen: function() {
         Events.register("YOUTUBE_PLAYER_PLAYING", this, this.onPlay);
@@ -20,6 +26,10 @@ YouTubeAction = Action.extend({
             }],
             'autoplay': true
         });
+    },
+    unrender: function() {
+        this.player.stop();
+        this.player.unembed();
     },
     onPlay: function() {
         var me = this;

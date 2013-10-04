@@ -32,7 +32,7 @@ YouTube.Player = Class.extend({
             $(this.container).attr('id'), "650", "360", "8", null, null, params, atts);
     },
     unembed: function() {
-        $('myytplayer').remove();
+        $('#myytplayer').remove();
     },
     onPlayerReady: function(player) {
         console.log("youtube player ready", player);
@@ -41,6 +41,12 @@ YouTube.Player = Class.extend({
         if (this.autoplay) {
             player.playVideo();
         }
+    },
+    play: function() {
+        this.player.playVideo();
+    },
+    stop: function() {
+        this.player.stopVideo();
     },
     getCurrentTime: function() {
         return this.player.getCurrentTime();

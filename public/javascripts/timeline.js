@@ -16,9 +16,10 @@ TimeLine = Class.extend({
     },
     render: function() {
         this.gui = new TimelineGUI({
-            container: '#timeline-container'
+            container: '#timeline-container',
+            actions: this.actions
         });
-        this.gui.render();
+        this.gui.render(this.getDuration());
     },
     run: function(time) {
         var me = this;
@@ -50,8 +51,11 @@ TimeLine = Class.extend({
     getDuration: function() {
         return this.actions.getDuration();
     },
-    setTime: function(time) {
+    setTime: function(time, reRender) {
         this.currentTime = time;
+        if (reRender) {
+            this.getCurrentAction().render();
+        }
     },
     getTime: function() {
         return this.currentTime;
@@ -68,7 +72,8 @@ TimeLine = Class.extend({
         }
     },
     onIndicatorMoved: function(jQueryEvent) {
-        this.setTime(this.gui.getTime(this.getDuration()));
+        this.setTime(this.gui.getTime(this.getDuration()), true);
+        Events.trigger('TIMELINE_MANUAL_UPDATE', null);
     }
 });
 
